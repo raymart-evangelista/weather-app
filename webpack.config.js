@@ -2,15 +2,26 @@ const webpack = require('webpack');
 const path = require('path');
 
 const config = {
+  mode: 'development',
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
+    port: 3000,
+    open: true,
+    hot: true,
+    compress: true,
+    historyApiFallback: true,
+  },
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [
           'style-loader',
           {
@@ -23,11 +34,11 @@ const config = {
         ]
       },
       {
-        test: /\.svg$/,
+        test: /\.svg$/i,
         use: 'file-loader'
       },
       {
-        test: /\.png$/,
+        test: /\.png$/i,
         use: [
           {
             loader: 'url-loader',
