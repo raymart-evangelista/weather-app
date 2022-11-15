@@ -3,8 +3,6 @@ import "./style.css";
 
 class View {
   constructor() {
-    console.log("hello world!");
-
     this.app = document.getElementById('app')
     
     this.zipInput = document.createElement('input')
@@ -15,14 +13,30 @@ class View {
     this.zipInputButton.textContent = 'Submit'
     
     this.tempElem = document.createElement('h1')
+    this.cityName = document.createElement('h1')
+    this.zipCode = document.createElement('h1')
 
-    this.app.append(this.zipInput, this.zipInputButton, this.tempElem)
+    this.app.append(
+      this.zipInput,
+      this.zipInputButton, 
+      this.cityName, 
+      this.zipCode, 
+      this.tempElem,
+      )
 
+    this.weatherDesc = document.createElement('h1')
+    this.weatherIcon = document.createElement('img')
+
+    this.app.append(
+      this.weatherDesc,
+      this.weatherIcon
+    )
     
     this.zipInputButton.addEventListener('click', event => {
       event.preventDefault()
     
-      this.getWeatherData(this.zipInput.value).then(result => {
+      this.getWeatherData(this.zipInput.value)
+      .then(result => {
         this.displayWeather(result)
       })
     })
@@ -31,27 +45,55 @@ class View {
   async getWeatherData(zip) {
     try {
       const data = await this.getZipInfo(zip)
-      console.log(`https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`)
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`, {mode: 'cors'})
-      const weatherData = await response.json()
-      console.log(`${weatherData.main.temp} degrees fahrenheit`)
-      return weatherData
+      console.log(`[getWeatherData][data]: ${data}`)
+      if (data) {
+        const weatherData = await this.loadJson(`https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`)
+        this.cityName.textContent = data.name
+        this.zipCode.textContent = data.zip
+        return weatherData
+        // console.log(`https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`)
+        // console.log(`${weatherData.main.temp} degrees fahrenheit`)
+      } else {
+        console.log("couldn't find that zip")
+      }
     } catch (err) {
-      alert(err)
+      console.log('something went wrong')
+    } finally {
+      this.zipInput.value = ''
     }
   }
 
   async getZipInfo(zip) {
-    const response = await fetch(`https://api.openweathermap.org/geo/1.0/zip?zip=${zip},US&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`, {mode: 'cors'})
-    const apiData = await response.json()
-    return apiData
+    const data = await this.loadJson(`https://api.openweathermap.org/geo/1.0/zip?zip=${zip},US&appid=b43956d89a79c4536461499aee6eb38b&units=imperial`)
+    return data
   }
 
   async displayWeather(data) {
     // console.log(data.main.temp)
-    let tempValue = await data.main.temp
-    console.log(tempValue)
-    this.tempElem.textContent = tempValue
+    if (data) {
+      let tempValue = parseInt(data.main.temp)
+      this.tempElem.textContent = `${tempValue} degrees fahrenheit`
+      let weatherDesc = data.weather[0].description
+      let weatherIconCode = data.weather[0].icon
+      let iconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}@2x.png`
+
+      this.weatherDesc.textContent = `${weatherDesc}`
+      this.weatherIcon.src = iconUrl
+    } else {
+      this.tempElem.textContent = 'invalid zip code'
+    }
+    // console.log(tempValue)
+  }
+
+  async loadJson(url) {
+    try {
+      let response = await fetch(url, {mode: 'cors'})
+      if (response.status == 200) {
+        return response.json()
+      }
+    } catch (err) {
+      console.log(`something went wrong: ${err}`)
+    }
   }
 
   
