@@ -4,34 +4,67 @@ import "./style.css";
 class View {
   constructor() {
     this.app = document.getElementById('app')
+    this.app.classList = 'w-screen h-screen flex justify-center dark:bg-gray-900'
     
+    this.weatherCard = document.createElement('div')
+    this.weatherCard.classList = 'w-64 h-96 flex flex-col p-2 mt-4 w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 gap-4'
+
+    let textStyle = 'text-center block mb-1 text-sm font-medium text-gray-900 dark:text-gray-100'
+
+    this.zipInputLabel = document.createElement('label')
+    this.zipInputLabel.classList = textStyle
+    this.zipInputLabel.textContent = 'Enter a zip code'
+
+
     this.zipInput = document.createElement('input')
+    this.zipInput.classList = 'w-fit bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white'
     this.zipInput.type = 'text'
     this.zipInput.placeholder = 'e.g.: 94108'
     
     this.zipInputButton = document.createElement('button')
+    this.zipInputButton.classList = 'w-fit text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
     this.zipInputButton.textContent = 'Submit'
-    
-    this.errElem = document.createElement('h1')
-    this.tempElem = document.createElement('h1')
-    this.cityName = document.createElement('h1')
-    this.zipCode = document.createElement('h1')
 
-    this.app.append(
-      this.zipInput,
-      this.zipInputButton, 
+    this.zipInputContainer = document.createElement('div')
+    this.zipInputContainer.classList = 'mt-4 flex flex-col gap-2 place-items-center'
+    this.zipInputContainer.append(this.zipInputLabel, this.zipInput, this.zipInputButton)
+    
+
+    this.errElem = document.createElement('h1')
+    this.errElem.classList = textStyle
+    this.tempElem = document.createElement('h1')
+    this.tempElem.classList = textStyle
+    this.cityName = document.createElement('h1')
+    this.cityName.classList = textStyle
+    this.zipCode = document.createElement('h1')
+    this.zipCode.classList = textStyle
+
+    this.resultsContainer = document.createElement('div')
+    this.resultsContainer.classList = 'mt-4 flex flex-col gap-2 place-items-center'
+
+    this.resultsContainer.append(
+      this.zipInputContainer,
       this.errElem,
       this.cityName, 
       this.zipCode, 
       this.tempElem,
       )
 
+    this.weatherCard.append(this.resultsContainer)
+    
+    this.app.append(this.weatherCard)
+
+
     this.weatherDesc = document.createElement('h1')
+    this.weatherDesc.classList = textStyle
     this.weatherIcon = document.createElement('img')
 
-    this.app.append(
-      this.weatherDesc,
-      this.weatherIcon
+    this.weatherDescContainer = document.createElement('div')
+    this.weatherDescContainer.classList = 'flex justify-center content-center place-items-center'
+    this.weatherDescContainer.append(this.weatherDesc, this.weatherIcon)
+
+    this.weatherCard.append(
+      this.weatherDescContainer
     )
     
     this.zipInputButton.addEventListener('click', event => {
@@ -86,10 +119,11 @@ class View {
       let weatherIconCode = data.weather[0].icon
       let iconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}@2x.png`
       
-      this.tempElem.textContent = `${tempValue} degrees fahrenheit`
+      this.tempElem.textContent = `${tempValue}°F`
       this.errElem.textContent = ''
       this.weatherDesc.textContent = `${weatherDesc}`
       this.weatherIcon.src = iconUrl
+      this.weatherIcon.width = '64'
     } else {
       this.errElem.textContent = 'invalid zip code'
       this.tempElem.textContent = ''
