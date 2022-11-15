@@ -12,6 +12,7 @@ class View {
     this.zipInputButton = document.createElement('button')
     this.zipInputButton.textContent = 'Submit'
     
+    this.errElem = document.createElement('h1')
     this.tempElem = document.createElement('h1')
     this.cityName = document.createElement('h1')
     this.zipCode = document.createElement('h1')
@@ -19,6 +20,7 @@ class View {
     this.app.append(
       this.zipInput,
       this.zipInputButton, 
+      this.errElem,
       this.cityName, 
       this.zipCode, 
       this.tempElem,
@@ -34,12 +36,20 @@ class View {
     
     this.zipInputButton.addEventListener('click', event => {
       event.preventDefault()
+      this.clearDOM()
     
       this.getWeatherData(this.zipInput.value)
       .then(result => {
         this.displayWeather(result)
       })
     })
+  }
+
+  clearDOM() {
+    this.cityName.textContent = ''
+    this.zipCode.textContent = ''
+    this.weatherDesc.textContent = ''
+    this.weatherIcon.src = ''
   }
 
   async getWeatherData(zip) {
@@ -72,15 +82,17 @@ class View {
     // console.log(data.main.temp)
     if (data) {
       let tempValue = parseInt(data.main.temp)
-      this.tempElem.textContent = `${tempValue} degrees fahrenheit`
       let weatherDesc = data.weather[0].description
       let weatherIconCode = data.weather[0].icon
       let iconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}@2x.png`
-
+      
+      this.tempElem.textContent = `${tempValue} degrees fahrenheit`
+      this.errElem.textContent = ''
       this.weatherDesc.textContent = `${weatherDesc}`
       this.weatherIcon.src = iconUrl
     } else {
-      this.tempElem.textContent = 'invalid zip code'
+      this.errElem.textContent = 'invalid zip code'
+      this.tempElem.textContent = ''
     }
     // console.log(tempValue)
   }
