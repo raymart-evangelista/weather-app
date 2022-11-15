@@ -7,7 +7,7 @@ class View {
     this.app.classList = 'w-screen h-screen flex justify-center dark:bg-gray-900'
     
     this.weatherCard = document.createElement('div')
-    this.weatherCard.classList = 'w-64 h-96 flex flex-col p-2 mt-4 w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 gap-4'
+    this.weatherCard.classList = 'w-60 h-96 flex flex-col p-2 mt-4 w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 gap-4'
 
     let textStyle = 'text-center block mb-1 text-sm font-medium text-gray-900 dark:text-gray-100'
 
