@@ -26,7 +26,7 @@ class View {
     this.zipInputButton.textContent = 'Submit'
 
     this.zipInputContainer = document.createElement('div')
-    this.zipInputContainer.classList = 'mt-4 flex flex-col gap-2 place-items-center'
+    this.zipInputContainer.classList = 'flex flex-col gap-2 place-items-center'
     this.zipInputContainer.append(this.zipInputLabel, this.zipInput, this.zipInputButton)
     
 
@@ -40,7 +40,7 @@ class View {
     this.zipCode.classList = textStyle
 
     this.resultsContainer = document.createElement('div')
-    this.resultsContainer.classList = 'mt-4 flex flex-col gap-2 place-items-center'
+    this.resultsContainer.classList = 'mt-2 flex flex-col gap-2 place-items-center'
 
     this.resultsContainer.append(
       this.zipInputContainer,
